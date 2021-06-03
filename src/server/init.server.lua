@@ -6,8 +6,8 @@ local Players = game:GetService("Players")
 -- It's fine to parent them to ReplicatedStorage for the time being
 local remoteFolder = Instance.new("Folder", ReplicatedStorage)
 local remotes = {
-    ["Function"] = Instance.new("RemoteFunction", ReplicatedStorage),
-    ["Event"] = Instance.new("RemoteEvent", ReplicatedStorage)
+    ["Function"] = Instance.new("RemoteFunction", remoteFolder),
+    ["Event"] = Instance.new("RemoteEvent", remoteFolder)
 }
 
 local packages, systemPackages = {}, {}
@@ -15,17 +15,18 @@ local permissionTable, disableTable = {}, {}
 local packagesButtons = {}
 local cachedData = {}
 local sharedCommons = {}
+local settings = require(script.SystemPackages.Settings)
 local currentTheme = nil
 local isPlayerAddedFired = false
 
-local function newWarn(...)
-    if systemPackages.Settings.Misc.IsVerbose then
+local function newWarn(...)	
+    if settings.Misc.isVerbose then
         warn("Commander; " .. ...)
     end
 end
 
 local function BuildPermissions()
-    local permissions = systemPackages.settings["Permission"]
+    local permissions = settings.Permissions
 
     for rank, data in pairs(permissions) do
     	newWarn("building permission table for " .. rank)

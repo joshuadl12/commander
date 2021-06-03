@@ -1,7 +1,7 @@
 local HttpService = game:GetService("HttpService")
 local Promise = require(script.Parent.Services.Promise)
 
-local URL = "https://api.github.com/repos/va1kio/commander/tags"
+local URL = "https://api.github.com/repos/joshuadl12/commander/tags"
 
 local function fetch()
     return Promise.new(function(resolve, reject)

@@ -274,7 +274,7 @@ function API.Players.NotifyWithAction(To: player|string, Type, From: string, Con
 	local bindable = Instance.new("BindableEvent")
 	local guid = HttpService:GenerateGUID()
 	local attachment = {["From"] = From, ["Content"] = Content, ["Sound"] = Sound or module.Settings.UI.AlertSound}
-	Bindable.Name = guid
+	bindable.Name = guid
 	
 	if tostring(To):lower() == "all" then
 		module.Remotes.Event:FireAllClients("newNotifyWithAction", {["Type"] = Type, ["GUID"] = guid}, attachment)
@@ -510,18 +510,11 @@ end
 -- To make naming convention much consistent, we have changed our function to PascalCase
 -- As a result, we need backward compatibility as older packages and code uses camelCase
 -- for functions
+-- for functions
 API.Players = setmetatable(API.Players, {
 	__index = function(self, key: string)
-		local newKey = ""
-		for index, character in ipairs(string.split(key, "")) do
-			if index == 1 then
-				character = string.upper(character)
-			end
-			
-			newKey = newKey .. character
-		end
-		
-		return self[newKey]
+		key = string.upper(string.sub(key,1,1)) .. string.sub(key,2)
+		return rawget(self,key) --calling self[newKey] would just invoke this index again
 	end	
 })
 
@@ -543,7 +536,7 @@ globalAPI = setmetatable({
 	GetAvailableAdmins = MakeBindable(IsolateFunction(module.Players.getAvailableAdmins)),
 	GetPlayersFromNameSelector = MakeBindable(IsolateFunction(module.Players.GetPlayersFromNameSelector)),
 	GetAdminStatus = MakeBindable(IsolateFunction(module.Players.getAdminStatus)),
-	GetAdmins = makeBindable(function()
+	GetAdmins = MakeBindable(function()
 		local permissions = {}
 		for name, permission in pairs(module.Players.getAdmins()) do
 			permissions[name] = permission
